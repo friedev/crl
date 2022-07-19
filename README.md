@@ -1,6 +1,6 @@
 # croguelike
 
-A basic roguelike implemented in C using ncurses, intended to serve as a template for more interesting roguelikes.
+A basic roguelike implemented in C using termbox2, intended to serve as a template for more interesting roguelikes.
 
 Very early in development; see TODO.md for planned features.
 
@@ -8,7 +8,7 @@ Very early in development; see TODO.md for planned features.
 
 - C99
 - Make
-- ncurses
+- termbox2 (installed globally, i.e. `make install`)
 
 ## Installation
 
@@ -18,7 +18,7 @@ Build locally:
 make
 ```
 
-Install globally (run as root):
+Install globally (as root):
 
 ```sh
 make install
@@ -38,9 +38,7 @@ If incremental code changes are causing include errors, try running `make clean`
 
 ## Contributing
 
-If you want to submit a patch, please follow these guidelines:
-
-- Run the project to test for bugs.
+Patches are welcome, but if you want to add any major features specific to a particular game, please create a fork.
 
 ## License
 

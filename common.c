@@ -1,39 +1,49 @@
+#include <termbox.h>
+
 #include "common.h"
+
+const color_t FG_MEMORY = BRIGHT(TB_BLACK);
+const color_t BG_MEMORY = TB_DEFAULT;
 
 const struct tile_type TILE_TYPES[] = {
 	{
-		.symbol = '.',
+		.ch = '.',
+		.fg = TB_DEFAULT,
+		.bg = TB_DEFAULT,
 		.walkable = true,
 		.transparent = true,
-		.pair = PAIR_DEFAULT,
 		.name = "floor",
 	},
 	{
-		.symbol = '#',
+		.ch = '#',
+		.fg = TB_DEFAULT,
+		.bg = TB_DEFAULT,
 		.walkable = false,
 		.transparent = false,
-		.pair = PAIR_DEFAULT,
 		.name = "wall",
 	},
 };
 
 const struct item_type ITEM_TYPES[] = {
 	{
-		.symbol = '*',
-		.pair = PAIR_YELLOW,
+		.ch = '*',
+		.fg = DARK(TB_YELLOW),
+		.bg = TB_DEFAULT,
 		.name = "gold",
 	}
 };
 
 const struct entity_type ENTITY_TYPES[] = {
 	{
-		.symbol = '@',
-		.pair = PAIR_RED,
+		.ch = '@',
+		.fg = DARK(TB_RED),
+		.bg = TB_DEFAULT,
 		.name = "rogue",
 	},
 	{
-		.symbol = 'g',
-		.pair = PAIR_GREEN,
+		.ch = 'g',
+		.fg = DARK(TB_GREEN),
+		.bg = TB_DEFAULT,
 		.name = "goblin",
 	},
 };

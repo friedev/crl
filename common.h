@@ -4,16 +4,26 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "colors.h"
-
 #define INVALID_COORD (-1)
 
-typedef uint8_t coord;
+// Adjustments for 256-color mode
+// TB_BLACK is 1, but black in 256-color mode is 0
+// Bright colors start with bright black at 0x08
+#define DARK(COLOR) ((COLOR) - 0x01)
+#define BRIGHT(COLOR) (DARK(COLOR) + 0x08)
+
+typedef uint8_t coord_t;
+
+// Defined to match uintattr_t without needing to include termbox in common.h
+typedef uint16_t color_t;
+
+extern const color_t FG_MEMORY;
+extern const color_t BG_MEMORY;
 
 struct tile_type {
-	// TODO make a glyph struct
-	const short pair;
-	const char symbol;
+	const char ch;
+	const color_t fg;
+	const color_t bg;
 	const bool walkable;
 	const bool transparent;
 	const char *name;
@@ -37,8 +47,9 @@ struct tile {
 };
 
 struct item_type {
-	const short pair;
-	const char symbol;
+	const char ch;
+	const color_t fg;
+	const color_t bg;
 	const char *name;
 };
 
@@ -56,8 +67,9 @@ struct item {
 };
 
 struct entity_type {
-	const short pair;
-	const char symbol;
+	const char ch;
+	const color_t fg;
+	const color_t bg;
 	const char *name;
 };
 
@@ -72,8 +84,8 @@ extern const struct entity_type ENTITY_TYPES[];
 struct entity {
 	struct item *item_head;
 	uint8_t type; // Index into ENTITY_TYPES
-	coord y;
-	coord x;
+	coord_t y;
+	coord_t x;
 	struct entity *prev;
 	struct entity *next;
 };

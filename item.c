@@ -13,7 +13,7 @@ void item_list_del(struct item *item_head)
 	}
 }
 
-static void item_add(coord y, coord x, struct item *item)
+static void item_add(coord_t y, coord_t x, struct item *item)
 {
 	item->prev = NULL;
 	item->next = TILE_MAP[y][x].item_head;
@@ -25,8 +25,8 @@ static void item_add(coord y, coord x, struct item *item)
 
 static void item_place(struct item *item)
 {
-	coord y = rand() % MAX_Y;
-	coord x = rand() % MAX_X;
+	coord_t y = rand() % MAX_Y;
+	coord_t x = rand() % MAX_X;
 	while (!TILE_TYPES[TILE_MAP[y][x].type].walkable) {
 		y = rand() % MAX_Y;
 		x = rand() % MAX_X;
@@ -50,8 +50,8 @@ void item_init_all()
 
 void item_free_all()
 {
-	for (coord y = MIN_Y; y < MAX_Y; y++) {
-		for (coord x = MIN_X; x < MAX_X; x++) {
+	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
+		for (coord_t x = MIN_X; x < MAX_X; x++) {
 			item_list_del(TILE_MAP[y][x].item_head);
 		}
 	}

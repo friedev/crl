@@ -1,6 +1,5 @@
 # TODO
 
-- Switch to termbox2
 - Item interaction
 	- Pick up item
 	- View inventory

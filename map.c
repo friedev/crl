@@ -14,8 +14,8 @@ bool map_in_bounds(int y, int x)
 
 static void map_clear()
 {
-	for (coord y = 0; y < MAX_Y; y++) {
-		for (coord x = 0; x < MAX_X; x++) {
+	for (coord_t y = 0; y < MAX_Y; y++) {
+		for (coord_t x = 0; x < MAX_X; x++) {
 			TILE_MAP[y][x] = (struct tile) {
 				.type = TILE_FLOOR,
 				.visible = false,
@@ -27,7 +27,7 @@ static void map_clear()
 	}
 }
 
-static uint8_t map_smooth_tile(coord y, coord x)
+static uint8_t map_smooth_tile(coord_t y, coord_t x)
 {
 	int neighbor_count = 0;
 	int floor_count = 0;
@@ -42,8 +42,8 @@ static uint8_t map_smooth_tile(coord y, coord x)
 				continue;
 			}
 
-			coord yn = y + dy;
-			coord xn = x + dx;
+			coord_t yn = y + dy;
+			coord_t xn = x + dx;
 			neighbor_count++;
 			if (TILE_MAP[yn][xn].type == TILE_FLOOR) {
 				floor_count++;
@@ -66,13 +66,13 @@ static uint8_t map_smooth_tile(coord y, coord x)
 static void map_smooth()
 {
 	uint8_t buffer[MAX_Y][MAX_X];
-	for (coord y = MIN_Y; y < MAX_Y; y++) {
-		for (coord x = MIN_X; x < MAX_X; x++) {
+	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
+		for (coord_t x = MIN_X; x < MAX_X; x++) {
 			buffer[y][x] = map_smooth_tile(y, x);
 		}
 	}
-	for (coord y = MIN_Y; y < MAX_Y; y++) {
-		for (coord x = MIN_X; x < MAX_X; x++) {
+	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
+		for (coord_t x = MIN_X; x < MAX_X; x++) {
 			TILE_MAP[y][x].type = buffer[y][x];
 		}
 	}
@@ -80,8 +80,8 @@ static void map_smooth()
 
 static void map_randomize()
 {
-	for (coord y = MIN_Y; y < MAX_Y; y++) {
-		for (coord x = MIN_X; x < MAX_X; x++) {
+	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
+		for (coord_t x = MIN_X; x < MAX_X; x++) {
 			TILE_MAP[y][x].type = rand() % 2
 				? TILE_FLOOR
 				: TILE_WALL;
@@ -91,8 +91,8 @@ static void map_randomize()
 
 static void map_fill(uint8_t type)
 {
-	for (coord y = MIN_Y; y < MAX_Y; y++) {
-		for (coord x = MIN_X; x < MAX_X; x++) {
+	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
+		for (coord_t x = MIN_X; x < MAX_X; x++) {
 			TILE_MAP[y][x].type = type;
 		}
 	}
@@ -100,11 +100,11 @@ static void map_fill(uint8_t type)
 
 static void map_border(uint8_t type)
 {
-	for (coord y = MIN_Y; y < MAX_Y; y++) {
+	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
 		TILE_MAP[y][MIN_X].type = type;
 		TILE_MAP[y][MAX_X - 1].type = type;
 	}
-	for (coord x = MIN_X; x < MAX_X; x++) {
+	for (coord_t x = MIN_X; x < MAX_X; x++) {
 		TILE_MAP[MIN_Y][x].type = type;
 		TILE_MAP[MAX_Y - 1][x].type = type;
 	}

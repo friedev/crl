@@ -17,10 +17,10 @@ static int MULTIPLIERS[4][8] = {
 
 // http://roguebasin.com/index.php/C++_shadowcasting_implementation
 static void fov_cast_light(
-	coord x,
-	coord y,
-	coord radius,
-	coord row,
+	coord_t x,
+	coord_t y,
+	coord_t radius,
+	coord_t row,
 	double start_slope,
 	double end_slope,
 	int xx,
@@ -33,7 +33,7 @@ static void fov_cast_light(
 		return;
 	}
 	double next_start_slope = start_slope;
-	for (coord i = row; i <= radius; i++) {
+	for (coord_t i = row; i <= radius; i++) {
 		bool blocked = false;
 		for (int dx = -i, dy = -i; dx <= 0; dx++) {
 			double l_slope = (dx - 0.5) / (dy + 0.5);
@@ -47,13 +47,13 @@ static void fov_cast_light(
 
 			int sax = dx * xx + dy * xy;
 			int say = dx * yx + dy * yy;
-			if ((sax < 0 && (coord)abs(sax) > x)
-				|| (say < 0 && (coord)abs(say) > y)
+			if ((sax < 0 && (coord_t)abs(sax) > x)
+				|| (say < 0 && (coord_t)abs(say) > y)
 			) {
 				continue;
 			}
-			coord ax = x + sax;
-			coord ay = y + say;
+			coord_t ax = x + sax;
+			coord_t ay = y + say;
 			if (!map_in_bounds(ay, ax)) {
 				continue;
 			}
@@ -99,8 +99,8 @@ static void fov_cast_light(
 
 void fov_update()
 {
-	for (coord y = 0; y < MAX_Y; y++) {
-		for (coord x = 0; x < MAX_X; x++) {
+	for (coord_t y = 0; y < MAX_Y; y++) {
+		for (coord_t x = 0; x < MAX_X; x++) {
 			TILE_MAP[y][x].visible = false;
 		}
 	}
@@ -109,7 +109,7 @@ void fov_update()
 	player_tile->visible = true;
 	player_tile->last_visible_type = player_tile->type;
 
-	for (coord i = 0; i < 8; i++) {
+	for (coord_t i = 0; i < 8; i++) {
 		fov_cast_light(
 			PLAYER.x,
 			PLAYER.y,

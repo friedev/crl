@@ -44,7 +44,7 @@ static void entity_del(struct entity *entity)
 	free(entity);
 }
 
-static bool entity_move(struct entity *entity, coord y, coord x)
+static bool entity_move(struct entity *entity, coord_t y, coord_t x)
 {
 	if (!map_in_bounds(y, x)) {
 		return false;
@@ -74,7 +74,7 @@ static bool entity_move(struct entity *entity, coord y, coord x)
 	return true;
 }
 
-static bool entity_attack(struct entity *entity, coord y, coord x)
+static bool entity_attack(struct entity *entity, coord_t y, coord_t x)
 {
 	if (!map_in_bounds(y, x)) {
 		return false;
@@ -100,7 +100,7 @@ static bool entity_attack(struct entity *entity, coord y, coord x)
 	return true;
 }
 
-static bool entity_move_attack(struct entity *entity, coord y, coord x)
+static bool entity_move_attack(struct entity *entity, coord_t y, coord_t x)
 {
 	return entity_move(entity, y, x) || entity_attack(entity, y, x);
 }

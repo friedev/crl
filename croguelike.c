@@ -1,4 +1,5 @@
-#include <curses.h>
+#define TB_IMPL
+#include <termbox.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -28,13 +29,14 @@ static void free_all()
 {
 	entity_free_all();
 	item_free_all();
+	draw_free();
 }
 
-static bool handle_input(int input)
+static bool handle_input(struct tb_event event)
 {
 	bool playing = true;
 	bool end_turn = false;
-	switch (input) {
+	switch (event.ch) {
 	case 'k':
 		end_turn = entity_move_attack_delta(&PLAYER, -1, 0);
 		break;
@@ -80,15 +82,16 @@ int main()
 	srand(time(NULL));
 	init_all();
 
+	struct tb_event event;
 	bool playing = true;
 	while (playing) {
 		draw();
-		refresh();
-		playing = handle_input(getch());
-		erase();
+		tb_present();
+		tb_poll_event(&event);
+		playing = handle_input(event);
+		tb_clear();
 	}
 
 	free_all();
-	endwin();
 	return 0;
 }

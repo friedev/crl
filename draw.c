@@ -1,76 +1,46 @@
-#include <curses.h>
+#include <termbox.h>
 
 #include "draw.h"
 
-#include "colors.h"
 #include "entity.h"
 #include "map.h"
 #include "message.h"
 
-/*
-static void draw_init_custom_colors()
-{
-	for (short i = COLOR_FIRST; i <= (short) COLOR_LAST; i++) {
-		struct custom_color color = CUSTOM_COLORS[i - COLOR_FIRST];
-		init_color(i, color.r, color.g, color.b);
-	}
-}
-*/
-
-static void draw_init_pairs()
-{
-	for (short i = 1; i < (short) PAIR_COUNT; i++) {
-		struct color_pair pair = PAIRS[i];
-		init_pair(i, pair.f, pair.b);
-	}
-}
-
-static void draw_init_colors()
-{
-	if (!has_colors()) {
-		return;
-	}
-	start_color();
-	use_default_colors();
-	//draw_init_custom_colors();
-	draw_init_pairs();
-}
-
-static void draw_init_curses()
-{
-	initscr();            // Start curses
-	cbreak();             // Use raw mode, but don't block signals
-	noecho();             // Don't print what the user types
-	keypad(stdscr, true); // Capture non-printing characters
-	curs_set(0);          // Hide the cursor
-}
-
 void draw_init()
 {
-	draw_init_curses();
-	draw_init_colors();
+	tb_init();
+	tb_set_output_mode(TB_OUTPUT_256);
 }
 
-static void draw_char(char symbol, short pair)
+void draw_free()
 {
-	attron(COLOR_PAIR(pair));
-	addnstr(&symbol, 1);
-	attroff(COLOR_PAIR(pair));
+	tb_shutdown();
 }
 
-static void draw_item(struct item *item)
+static void draw_cell(coord_t y, coord_t x, char ch, color_t fg, color_t bg)
+{
+	tb_set_cell(x, y, ch, fg, bg);
+}
+
+static void draw_tile(coord_t y, coord_t x, struct tile *tile)
+{
+	const struct tile_type *type = &TILE_TYPES[tile->type];
+	draw_cell(y, x, type->ch, type->fg, type->bg);
+}
+
+static void draw_item(coord_t y, coord_t x, struct item *item)
 {
 	const struct item_type *type = &ITEM_TYPES[item->type];
-	draw_char(type->symbol, type->pair);
+	draw_cell(y, x, type->ch, type->fg, type->bg);
 }
 
-static void draw_entity(struct entity *entity)
+static void draw_entity(coord_t y, coord_t x, struct entity *entity)
 {
 	const struct entity_type *type = &ENTITY_TYPES[entity->type];
-	draw_char(type->symbol, type->pair);
+	draw_cell(y, x, type->ch, type->fg, type->bg);
 }
 
-static void draw_coord(coord y, coord x)
+static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x)
 {
 	struct tile *tile = &TILE_MAP[y][x];
 	if (tile->last_visible_type == TILE_INVALID) {
@@ -80,39 +50,36 @@ static void draw_coord(coord y, coord x)
 	const struct tile_type *tile_type;
 	if (!tile->visible) {
 		tile_type = &TILE_TYPES[tile->last_visible_type];
-		draw_char(tile_type->symbol, PAIR_MEMORY);
+		draw_cell(cy, cx, tile_type->ch, FG_MEMORY, BG_MEMORY);
 		return;
 	}
 
 	if (tile->entity != NULL) {
-		draw_entity(tile->entity);
+		draw_entity(cy, cx, tile->entity);
 		return;
 	}
 
 	if (tile->item_head != NULL) {
-		draw_item(tile->item_head);
+		draw_item(cy, cx, tile->item_head);
 		return;
 	}
 
-	tile_type = &TILE_TYPES[tile->type];
-	draw_char(tile_type->symbol, tile_type->pair);
+	draw_tile(cy, cx, tile);
 }
 
 static void draw_map()
 {
-	int maxy;
-	int maxx;
-	getmaxyx(stdscr, maxy, maxx);
-	maxy -= MESSAGE_COUNT;
-	int offy = PLAYER.y - maxy / 2;
-	int offx = PLAYER.x - maxx / 2;
-	for (int cy = 0; cy < maxy; cy++) {
-		for (int cx = 0; cx < maxx; cx++) {
-			int y = cy + offy;
-			int x = cx + offx;
+	int max_y = tb_height();
+	int max_x = tb_width();
+	max_y -= MESSAGE_COUNT;
+	int off_y = PLAYER.y - max_y / 2;
+	int off_x = PLAYER.x - max_x / 2;
+	for (int cy = 0; cy < max_y; cy++) {
+		for (int cx = 0; cx < max_x; cx++) {
+			int y = cy + off_y;
+			int x = cx + off_x;
 			if (map_in_bounds(y, x)) {
-				wmove(stdscr, cy, cx);
-				draw_coord(y, x);
+				draw_coord(cy, cx, y, x);
 			}
 		}
 	}
@@ -120,14 +87,11 @@ static void draw_map()
 
 static void draw_messages()
 {
-	int y;
-	int x;
-	getmaxyx(stdscr, y, x);
-	y -= MESSAGE_COUNT;
-	x = 0;
+	int y = tb_height() - MESSAGE_COUNT;
+	int x = 0;
 	int i = MESSAGE_INDEX;
 	do {
-		mvaddnstr(y, x, MESSAGES[i], MESSAGE_SIZE);
+		tb_print(x, y, TB_DEFAULT, TB_DEFAULT, MESSAGES[i]);
 		y++;
 		i++;
 		i %= MESSAGE_COUNT;

@@ -28,6 +28,7 @@ static void next_turn()
 static void free_all()
 {
 	entity_free_all();
+	player_free();
 	item_free_all();
 	draw_free();
 }
@@ -36,6 +37,7 @@ static bool handle_input(struct tb_event event)
 {
 	bool playing = true;
 	bool end_turn = false;
+	struct item_node *item_node;
 	switch (event.ch) {
 	case 'k':
 		end_turn = entity_move_attack_delta(&PLAYER, -1, 0);
@@ -60,6 +62,20 @@ static bool handle_input(struct tb_event event)
 		break;
 	case 'n':
 		end_turn = entity_move_attack_delta(&PLAYER, +1, +1);
+		break;
+	case 'g':
+		item_node = TILE_MAP[PLAYER.y][PLAYER.x].items.head;
+		if (item_node != NULL) {
+			entity_pick_up_item(&PLAYER, item_node);
+			end_turn = true;
+		}
+		break;
+	case 'd':
+		item_node = PLAYER.items.head;
+		if (item_node != NULL) {
+			entity_drop_item(&PLAYER, item_node);
+			end_turn = true;
+		}
 		break;
 	case '.':
 		end_turn = true;

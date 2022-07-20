@@ -149,6 +149,7 @@ static bool entity_attack(struct entity *entity, coord_t y, coord_t x)
 	}
 
 	// TODO HP
+
 	char message[MESSAGE_SIZE];
 	snprintf(
 		message,
@@ -158,6 +159,7 @@ static bool entity_attack(struct entity *entity, coord_t y, coord_t x)
 		ENTITY_TYPES[target->type].name
 	);
 	message_add(message);
+
 	entity_list_remove(&ENTITIES, target);
 	entity_free(target);
 
@@ -182,6 +184,44 @@ static bool entity_attack_delta(struct entity *entity, int dy, int dx)
 bool entity_move_attack_delta(struct entity *entity, int dy, int dx)
 {
 	return entity_move_attack(entity, entity->y + dy, entity->x + dx);
+}
+
+void entity_pick_up_item(struct entity *entity, struct item_node *item_node)
+{
+	struct item_list *tile_items = &TILE_MAP[entity->y][entity->x].items;
+	// TODO assert tile_items contains item_node
+
+	char message[MESSAGE_SIZE];
+	snprintf(
+		message,
+		MESSAGE_SIZE,
+		"The %s picks up the %s.",
+		ENTITY_TYPES[entity->type].name,
+		ITEM_TYPES[item_node->item->type].name
+	);
+
+	message_add(message);
+	item_list_add(&entity->items, item_node->item);
+	item_list_free_node(tile_items, item_node);
+}
+
+void entity_drop_item(struct entity *entity, struct item_node *item_node)
+{
+	struct item_list *tile_items = &TILE_MAP[entity->y][entity->x].items;
+	// TODO assert entity->items contains item_node
+
+	char message[MESSAGE_SIZE];
+	snprintf(
+		message,
+		MESSAGE_SIZE,
+		"The %s drops the %s.",
+		ENTITY_TYPES[entity->type].name,
+		ITEM_TYPES[item_node->item->type].name
+	);
+	message_add(message);
+
+	item_list_add(tile_items, item_node->item);
+	item_list_free_node(&entity->items, item_node);
 }
 
 static void entity_place(struct entity *entity)
@@ -240,4 +280,9 @@ void entity_act_all()
 void entity_free_all()
 {
 	entity_list_free(&ENTITIES);
+}
+
+void player_free()
+{
+	item_list_free(&PLAYER.items);
 }

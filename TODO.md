@@ -1,9 +1,6 @@
 # TODO
 
-- Item interaction
-	- Pick up item
-	- View inventory
-	- Drop item
+- Inventory
 - Terrain
 	- Opaque, passable terrain (e.g. tall grass)
 	- Chasms (transparent, impassable)

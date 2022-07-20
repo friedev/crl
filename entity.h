@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-extern struct entity *ENTITY_HEAD;
+extern struct entity_list ENTITIES;
 
 extern struct entity PLAYER;
 

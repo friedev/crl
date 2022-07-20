@@ -59,8 +59,8 @@ static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x)
 		return;
 	}
 
-	if (tile->item_head != NULL) {
-		draw_item(cy, cx, tile->item_head);
+	if (tile->items.head != NULL) {
+		draw_item(cy, cx, tile->items.head->item);
 		return;
 	}
 

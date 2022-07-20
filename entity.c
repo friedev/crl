@@ -7,41 +7,104 @@
 #include "map.h"
 #include "message.h"
 
-struct entity *ENTITY_HEAD = NULL;
+struct entity_list ENTITIES = {
+	.size = 0,
+	.head = NULL,
+	.tail = NULL,
+};
 
 struct entity PLAYER = {
-	.item_head = NULL,
+	.items = {
+		.size = 0,
+		.head = NULL,
+		.tail = NULL,
+	},
 	.y = 0, // Overwritten in init_player()
 	.x = 0, // Overwritten in init_player()
 	.type = ENTITY_PLAYER,
 };
 
-static void entity_add(struct entity *entity)
+void entity_list_add_node(struct entity_list *list, struct entity_node *node)
 {
-	entity->prev = NULL;
-	entity->next = ENTITY_HEAD;
-	if (ENTITY_HEAD != NULL) {
-		ENTITY_HEAD->prev = entity;
+	node->prev = list->tail;
+	if (list->head == NULL) {
+		list->head = node;
+	} else if (list->tail != NULL) {
+		list->tail->next = node;
 	}
-	ENTITY_HEAD = entity;
+	list->tail = node;
+	list->size++;
 }
 
-static void entity_del(struct entity *entity)
+void entity_list_add(struct entity_list *list, struct entity *entity)
 {
-	if (ENTITY_HEAD == entity) {
-		ENTITY_HEAD = entity->next;
+	struct entity_node *node = malloc(sizeof(struct entity_node));
+	*node = (struct entity_node) {
+		.entity = entity,
+		.next = NULL,
+		.prev = NULL,
+	};
+	entity_list_add_node(list, node);
+}
+
+struct entity_node *entity_list_find(
+	struct entity_list *list,
+	struct entity *entity
+)
+{
+	struct entity_node *current = list->head;
+	while (current != NULL && current->entity != entity) {
+		current = current->next;
 	}
-	if (entity->prev != NULL) {
-		entity->prev->next = entity->next;
+	return current;
+}
+
+void entity_list_free_node(struct entity_list *list, struct entity_node *node)
+{
+	if (node == list->head) {
+		list->head = node->next;
 	}
-	if (entity->next != NULL) {
-		entity->next->prev = entity->prev;
+	if (node == list->tail) {
+		list->tail = node->prev;
 	}
+	if (node->prev != NULL) {
+		node->prev->next = node->next;
+	}
+	if (node->next != NULL) {
+		node->next->prev = node->prev;
+	}
+
+	list->size--;
+	free(node);
+}
+
+void entity_list_remove(struct entity_list *list, struct entity *entity)
+{
+	entity_list_free_node(list, entity_list_find(list, entity));
+}
+
+void entity_list_clear(struct entity_list *list)
+{
+	while (list->head != NULL) {
+		entity_list_free_node(list, list->head);
+	}
+}
+
+static void entity_free(struct entity *entity)
+{
 	if (map_in_bounds(entity->y, entity->x)) {
 		TILE_MAP[entity->y][entity->x].entity = NULL;
 	}
-	item_list_del(entity->item_head);
+	item_list_free(&entity->items);
 	free(entity);
+}
+
+void entity_list_free(struct entity_list *list)
+{
+	while (list->head != NULL) {
+		entity_free(list->head->entity);
+		entity_list_free_node(list, list->head);
+	}
 }
 
 static bool entity_move(struct entity *entity, coord_t y, coord_t x)
@@ -95,7 +158,8 @@ static bool entity_attack(struct entity *entity, coord_t y, coord_t x)
 		ENTITY_TYPES[target->type].name
 	);
 	message_add(message);
-	entity_del(target);
+	entity_list_remove(&ENTITIES, target);
+	entity_free(target);
 
 	return true;
 }
@@ -131,15 +195,17 @@ void entity_init_all()
 	for (int i = 0; i < 30; i++) {
 		struct entity *entity = malloc(sizeof(struct entity));
 		*entity = (struct entity) {
-			.item_head = NULL,
-			.next = NULL,
-			.prev = NULL,
 			.type = ENTITY_GOBLIN,
 			.y = INVALID_COORD,
 			.x = INVALID_COORD,
+			.items = {
+				.size = 0,
+				.head = NULL,
+				.tail = NULL,
+			},
 		};
 		entity_place(entity);
-		entity_add(entity);
+		entity_list_add(&ENTITIES, entity);
 	}
 }
 
@@ -164,16 +230,14 @@ static void entity_act(struct entity *entity)
 
 void entity_act_all()
 {
-	struct entity *head = ENTITY_HEAD;
-	while (head != NULL) {
-		entity_act(head);
-		head = head->next;
+	struct entity_node *current = ENTITIES.head;
+	while (current != NULL) {
+		entity_act(current->entity);
+		current = current->next;
 	}
 }
 
 void entity_free_all()
 {
-	while (ENTITY_HEAD != NULL) {
-		entity_del(ENTITY_HEAD);
-	}
+	entity_list_free(&ENTITIES);
 }

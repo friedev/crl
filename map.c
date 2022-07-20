@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "fov.h"
 #include "map.h"
+
+#include "fov.h"
 #include "message.h"
 
 struct tile TILE_MAP[MAX_Y][MAX_X];
@@ -21,7 +22,11 @@ static void map_clear()
 				.visible = false,
 				.last_visible_type = TILE_INVALID,
 				.entity = NULL,
-				.item_head = NULL,
+				.items = {
+					.size = 0,
+					.head = NULL,
+					.tail = NULL,
+				},
 			};
 		}
 	}

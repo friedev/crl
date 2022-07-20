@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-void item_list_del(struct item *item_head);
+void item_list_free(struct item_list *list);
 void item_init_all();
 void item_free_all();
 

@@ -20,6 +20,37 @@ typedef uint16_t color_t;
 extern const color_t FG_MEMORY;
 extern const color_t BG_MEMORY;
 
+struct item_type {
+	const char ch;
+	const color_t fg;
+	const color_t bg;
+	const char *name;
+};
+
+enum {
+	ITEM_GOLD,
+	ITEM_TYPE_COUNT,
+};
+
+extern const struct item_type ITEM_TYPES[];
+
+struct item {
+	uint8_t type; // Index into ITEM_TYPES
+};
+
+struct item_node {
+	struct item *item;
+	struct item_node *prev;
+	struct item_node *next;
+};
+
+struct item_list {
+	uint8_t size;
+	struct item_node *head;
+	struct item_node *tail;
+};
+
+
 struct tile_type {
 	const char ch;
 	const color_t fg;
@@ -43,27 +74,7 @@ struct tile {
 	uint8_t last_visible_type; // Index into TILE_TYPES
 	bool visible;
 	struct entity *entity;
-	struct item *item_head;
-};
-
-struct item_type {
-	const char ch;
-	const color_t fg;
-	const color_t bg;
-	const char *name;
-};
-
-enum {
-	ITEM_GOLD,
-	ITEM_TYPE_COUNT,
-};
-
-extern const struct item_type ITEM_TYPES[];
-
-struct item {
-	uint8_t type; // Index into ITEM_TYPES
-	struct item *prev;
-	struct item *next;
+	struct item_list items;
 };
 
 struct entity_type {
@@ -82,12 +93,22 @@ enum {
 extern const struct entity_type ENTITY_TYPES[];
 
 struct entity {
-	struct item *item_head;
 	uint8_t type; // Index into ENTITY_TYPES
 	coord_t y;
 	coord_t x;
-	struct entity *prev;
-	struct entity *next;
+	struct item_list items;
+};
+
+struct entity_node {
+	struct entity *entity;
+	struct entity_node *prev;
+	struct entity_node *next;
+};
+
+struct entity_list {
+	uint8_t size;
+	struct entity_node *head;
+	struct entity_node *tail;
 };
 
 #endif

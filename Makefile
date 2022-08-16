@@ -1,4 +1,4 @@
-PROGRAM = croguelike
+PROGRAM = crl
 
 CFLAGS  = -g -Wall -Wextra -Wpedantic
 LDFLAGS = -lncurses

@@ -1,4 +1,4 @@
-# croguelike
+# crl
 
 A basic roguelike implemented in C using termbox2, intended to serve as a template for more interesting roguelikes.
 
@@ -27,10 +27,10 @@ make install
 ## Usage
 
 ```sh
-./roguelike
+crl
 ```
 
-croguelike accepts no command line arguments.
+crl accepts no command line arguments.
 
 ## Troubleshooting
 
@@ -42,5 +42,5 @@ Patches are welcome, but if you want to add any major features specific to a par
 
 ## License
 
-croguelike is licensed under the GNU Affero General Public License 3.0.
+crl is licensed under the GNU Affero General Public License 3.0.
 See LICENSE.txt for the full license text.

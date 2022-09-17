@@ -6,42 +6,35 @@
 #include "map.h"
 #include "message.h"
 
-void draw_init()
-{
+void draw_init() {
 	tb_init();
 	tb_set_output_mode(TB_OUTPUT_256);
 }
 
-void draw_free()
-{
+void draw_free() {
 	tb_shutdown();
 }
 
-static void draw_cell(coord_t y, coord_t x, char ch, color_t fg, color_t bg)
-{
+static void draw_cell(coord_t y, coord_t x, char ch, color_t fg, color_t bg) {
 	tb_set_cell(x, y, ch, fg, bg);
 }
 
-static void draw_tile(coord_t y, coord_t x, struct tile *tile)
-{
+static void draw_tile(coord_t y, coord_t x, struct tile *tile) {
 	const struct tile_type *type = &TILE_TYPES[tile->type];
 	draw_cell(y, x, type->ch, type->fg, type->bg);
 }
 
-static void draw_item(coord_t y, coord_t x, struct item *item)
-{
+static void draw_item(coord_t y, coord_t x, struct item *item) {
 	const struct item_type *type = &ITEM_TYPES[item->type];
 	draw_cell(y, x, type->ch, type->fg, type->bg);
 }
 
-static void draw_entity(coord_t y, coord_t x, struct entity *entity)
-{
+static void draw_entity(coord_t y, coord_t x, struct entity *entity) {
 	const struct entity_type *type = &ENTITY_TYPES[entity->type];
 	draw_cell(y, x, type->ch, type->fg, type->bg);
 }
 
-static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x)
-{
+static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x) {
 	struct tile *tile = &TILE_MAP[y][x];
 	if (tile->last_visible_type == TILE_INVALID) {
 		return;
@@ -67,8 +60,7 @@ static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x)
 	draw_tile(cy, cx, tile);
 }
 
-static void draw_map()
-{
+static void draw_map() {
 	int max_y = tb_height();
 	int max_x = tb_width();
 	max_y -= MESSAGE_COUNT;
@@ -85,8 +77,7 @@ static void draw_map()
 	}
 }
 
-static void draw_messages()
-{
+static void draw_messages() {
 	int y = tb_height() - MESSAGE_COUNT;
 	int x = 0;
 	int i = MESSAGE_INDEX;
@@ -98,8 +89,7 @@ static void draw_messages()
 	} while (i != MESSAGE_INDEX);
 }
 
-void draw()
-{
+void draw() {
 	draw_map();
 	draw_messages();
 }

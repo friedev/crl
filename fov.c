@@ -27,8 +27,7 @@ static void fov_cast_light(
 	int xy,
 	int yx,
 	int yy
-)
-{
+) {
 	if (start_slope < end_slope) {
 		return;
 	}
@@ -48,8 +47,7 @@ static void fov_cast_light(
 			int sax = dx * xx + dy * xy;
 			int say = dx * yx + dy * yy;
 			if ((sax < 0 && (coord_t)abs(sax) > x)
-				|| (say < 0 && (coord_t)abs(say) > y)
-			) {
+			    || (say < 0 && (coord_t)abs(say) > y)) {
 				continue;
 			}
 			coord_t ax = x + sax;
@@ -97,8 +95,7 @@ static void fov_cast_light(
 	}
 }
 
-void fov_update()
-{
+void fov_update() {
 	for (coord_t y = 0; y < MAX_Y; y++) {
 		for (coord_t x = 0; x < MAX_X; x++) {
 			TILE_MAP[y][x].visible = false;

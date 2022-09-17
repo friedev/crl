@@ -1,16 +1,15 @@
 #define TB_IMPL
-#include <termbox.h>
 #include <stdlib.h>
+#include <termbox.h>
 #include <time.h>
 
 #include "draw.h"
-#include "map.h"
-#include "item.h"
 #include "entity.h"
 #include "fov.h"
+#include "item.h"
+#include "map.h"
 
-static void init_all()
-{
+static void init_all() {
 	draw_init();
 	map_init();
 	item_init_all();
@@ -19,22 +18,19 @@ static void init_all()
 	fov_update();
 }
 
-static void next_turn()
-{
+static void next_turn() {
 	entity_act_all();
 	fov_update();
 }
 
-static void free_all()
-{
+static void free_all() {
 	entity_free_all();
 	player_free();
 	item_free_all();
 	draw_free();
 }
 
-static bool handle_input(struct tb_event event)
-{
+static bool handle_input(struct tb_event event) {
 	bool playing = true;
 	bool end_turn = false;
 	struct item_node *item_node;
@@ -93,8 +89,7 @@ static bool handle_input(struct tb_event event)
 	return playing;
 }
 
-int main()
-{
+int main() {
 	srand(time(NULL));
 	init_all();
 

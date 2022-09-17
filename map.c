@@ -8,32 +8,30 @@
 
 struct tile TILE_MAP[MAX_Y][MAX_X];
 
-bool map_in_bounds(int y, int x)
-{
+bool map_in_bounds(int y, int x) {
 	return MIN_Y <= y && y < MAX_Y && MIN_X <= x && x < MAX_X;
 }
 
-static void map_clear()
-{
+static void map_clear() {
 	for (coord_t y = 0; y < MAX_Y; y++) {
 		for (coord_t x = 0; x < MAX_X; x++) {
-			TILE_MAP[y][x] = (struct tile) {
+			TILE_MAP[y][x] = (struct tile){
 				.type = TILE_FLOOR,
 				.visible = false,
 				.last_visible_type = TILE_INVALID,
 				.entity = NULL,
-				.items = {
-					.size = 0,
-					.head = NULL,
-					.tail = NULL,
-				},
+				.items =
+					{
+						.size = 0,
+						.head = NULL,
+						.tail = NULL,
+					},
 			};
 		}
 	}
 }
 
-static uint8_t map_smooth_tile(coord_t y, coord_t x)
-{
+static uint8_t map_smooth_tile(coord_t y, coord_t x) {
 	int neighbor_count = 0;
 	int floor_count = 0;
 	int wall_count = 0;
@@ -68,8 +66,7 @@ static uint8_t map_smooth_tile(coord_t y, coord_t x)
 	return TILE_MAP[y][x].type;
 }
 
-static void map_smooth()
-{
+static void map_smooth() {
 	uint8_t buffer[MAX_Y][MAX_X];
 	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
 		for (coord_t x = MIN_X; x < MAX_X; x++) {
@@ -83,19 +80,16 @@ static void map_smooth()
 	}
 }
 
-static void map_randomize()
-{
+static void map_randomize() {
 	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
 		for (coord_t x = MIN_X; x < MAX_X; x++) {
-			TILE_MAP[y][x].type = rand() % 2
-				? TILE_FLOOR
-				: TILE_WALL;
+			TILE_MAP[y][x].type = rand() % 2 ? TILE_FLOOR
+							 : TILE_WALL;
 		}
 	}
 }
 
-static void map_fill(uint8_t type)
-{
+static void map_fill(uint8_t type) {
 	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
 		for (coord_t x = MIN_X; x < MAX_X; x++) {
 			TILE_MAP[y][x].type = type;
@@ -103,8 +97,7 @@ static void map_fill(uint8_t type)
 	}
 }
 
-static void map_border(uint8_t type)
-{
+static void map_border(uint8_t type) {
 	for (coord_t y = MIN_Y; y < MAX_Y; y++) {
 		TILE_MAP[y][MIN_X].type = type;
 		TILE_MAP[y][MAX_X - 1].type = type;
@@ -115,8 +108,7 @@ static void map_border(uint8_t type)
 	}
 }
 
-void map_init()
-{
+void map_init() {
 	map_clear();
 	map_randomize();
 	for (int i = 0; i < 3; i++) {

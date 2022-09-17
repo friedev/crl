@@ -30,7 +30,7 @@ const struct item_type ITEM_TYPES[] = {
 		.fg = DARK(TB_YELLOW),
 		.bg = TB_DEFAULT,
 		.name = "gold",
-	}
+	},
 };
 
 const struct entity_type ENTITY_TYPES[] = {

@@ -9,7 +9,7 @@
 // Adjustments for 256-color mode
 // TB_BLACK is 1, but black in 256-color mode is 0
 // Bright colors start with bright black at 0x08
-#define DARK(COLOR) ((COLOR) - 0x01)
+#define DARK(COLOR) ((COLOR)-0x01)
 #define BRIGHT(COLOR) (DARK(COLOR) + 0x08)
 
 typedef uint8_t coord_t;
@@ -49,7 +49,6 @@ struct item_list {
 	struct item_node *head;
 	struct item_node *tail;
 };
-
 
 struct tile_type {
 	const char ch;

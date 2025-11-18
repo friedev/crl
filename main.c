@@ -1,6 +1,6 @@
 #define TB_IMPL
 #include <stdlib.h>
-#include <termbox.h>
+#include <termbox2.h>
 #include <time.h>
 
 #include "draw.h"

@@ -1,4 +1,4 @@
-#include <termbox.h>
+#include <termbox2.h>
 
 #include "common.h"
 

@@ -1,8 +1,6 @@
 # crl
 
-A basic roguelike implemented in C using termbox2, intended to serve as a template for more interesting roguelikes.
-
-Very early in development; see TODO.md for planned features.
+Unfinished prototype of a traditional roguelike game using C and [termbox2](https://github.com/termbox/termbox2),
 
 ## Dependencies
 
@@ -32,15 +30,20 @@ crl
 
 crl accepts no command line arguments.
 
-## Troubleshooting
+### Controls
+
+- Move: `hjklyubn`
+- Wait: `.`
+- Pick up item: `g`
+- Drop item: `d`
+
+## Development
+
+### Troubleshooting
 
 If incremental code changes are causing include errors, try running `make clean` to delete the generated `*.d` files.
 
-## Contributing
-
-Patches are welcome, but if you want to add any major features specific to a particular game, please create a fork.
-
 ## License
 
-crl is licensed under the GNU Affero General Public License 3.0.
-See LICENSE.txt for the full license text.
+crl is licensed under the MIT License.
+See [LICENSE.txt](LICENSE.txt) for the full license text.

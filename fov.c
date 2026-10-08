@@ -44,8 +44,8 @@ static void fov_cast_light(
                 break;
             }
 
-            int sax = dx * xx + dy * xy;
-            int say = dx * yx + dy * yy;
+            int sax = (dx * xx) + (dy * xy);
+            int say = (dx * yx) + (dy * yy);
             if ((sax < 0 && (coord_t)abs(sax) > x)
                 || (say < 0 && (coord_t)abs(say) > y)) {
                 continue;
@@ -59,12 +59,12 @@ static void fov_cast_light(
             struct tile *tile = &TILE_MAP[ay][ax];
 
             unsigned int radius2 = radius * radius;
-            if ((unsigned int)(dx * dx + dy * dy) < radius2) {
+            if ((unsigned int)((dx * dx) + (dy * dy)) < radius2) {
                 tile->last_visible_type = tile->type;
                 tile->visible = true;
             }
 
-            bool opaque = !TILE_TYPES[tile->type].transparent;
+            bool opaque = (!TILE_TYPES[tile->type].transparent) != 0;
             if (blocked) {
                 if (opaque) {
                     next_start_slope = r_slope;
@@ -86,7 +86,7 @@ static void fov_cast_light(
     }
 }
 
-void fov_update() {
+void fov_update(void) {
     for (coord_t y = 0; y < MAX_Y; y++) {
         for (coord_t x = 0; x < MAX_X; x++) {
             TILE_MAP[y][x].visible = false;

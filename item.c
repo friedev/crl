@@ -3,6 +3,7 @@
 
 #include "item.h"
 
+#include "common.h"
 #include "map.h"
 
 void item_list_add_node(struct item_list *list, struct item_node *node) {
@@ -81,7 +82,7 @@ static void item_place(struct item *item) {
     item_list_add(&TILE_MAP[y][x].items, item);
 }
 
-void item_init_all() {
+void item_init_all(void) {
     // TODO spawn tables or something
     for (int i = 0; i < 30; i++) {
         struct item *item = malloc(sizeof(struct item));
@@ -92,7 +93,7 @@ void item_init_all() {
     }
 }
 
-void item_free_all() {
+void item_free_all(void) {
     for (coord_t y = MIN_Y; y < MAX_Y; y++) {
         for (coord_t x = MIN_X; x < MAX_X; x++) {
             item_list_free(&TILE_MAP[y][x].items);

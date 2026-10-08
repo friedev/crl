@@ -11,7 +11,7 @@ void item_list_remove(struct item_list *list, struct item *item);
 void item_list_clear(struct item_list *list);
 void item_free(struct item *item);
 void item_list_free(struct item_list *list);
-void item_init_all();
-void item_free_all();
+void item_init_all(void);
+void item_free_all(void);
 
 #endif

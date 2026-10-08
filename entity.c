@@ -3,6 +3,7 @@
 
 #include "entity.h"
 
+#include "common.h"
 #include "item.h"
 #include "map.h"
 #include "message.h"
@@ -25,7 +26,8 @@ struct entity PLAYER = {
     .type = ENTITY_PLAYER,
 };
 
-void entity_list_add_node(struct entity_list *list, struct entity_node *node) {
+static void
+entity_list_add_node(struct entity_list *list, struct entity_node *node) {
     node->prev = list->tail;
     if (list->head == NULL) {
         list->head = node;
@@ -36,7 +38,7 @@ void entity_list_add_node(struct entity_list *list, struct entity_node *node) {
     list->size++;
 }
 
-void entity_list_add(struct entity_list *list, struct entity *entity) {
+static void entity_list_add(struct entity_list *list, struct entity *entity) {
     struct entity_node *node = malloc(sizeof(struct entity_node));
     *node = (struct entity_node) {
         .entity = entity,
@@ -46,7 +48,7 @@ void entity_list_add(struct entity_list *list, struct entity *entity) {
     entity_list_add_node(list, node);
 }
 
-struct entity_node *
+static struct entity_node *
 entity_list_find(struct entity_list *list, struct entity *entity) {
     struct entity_node *current = list->head;
     while (current != NULL && current->entity != entity) {
@@ -55,7 +57,8 @@ entity_list_find(struct entity_list *list, struct entity *entity) {
     return current;
 }
 
-void entity_list_free_node(struct entity_list *list, struct entity_node *node) {
+static void
+entity_list_free_node(struct entity_list *list, struct entity_node *node) {
     if (node == list->head) {
         list->head = node->next;
     }
@@ -73,11 +76,12 @@ void entity_list_free_node(struct entity_list *list, struct entity_node *node) {
     free(node);
 }
 
-void entity_list_remove(struct entity_list *list, struct entity *entity) {
+static void
+entity_list_remove(struct entity_list *list, struct entity *entity) {
     entity_list_free_node(list, entity_list_find(list, entity));
 }
 
-void entity_list_clear(struct entity_list *list) {
+static void entity_list_clear(struct entity_list *list) {
     while (list->head != NULL) {
         entity_list_free_node(list, list->head);
     }
@@ -91,7 +95,7 @@ static void entity_free(struct entity *entity) {
     free(entity);
 }
 
-void entity_list_free(struct entity_list *list) {
+static void entity_list_free(struct entity_list *list) {
     while (list->head != NULL) {
         entity_free(list->head->entity);
         entity_list_free_node(list, list->head);
@@ -156,7 +160,7 @@ static bool entity_attack(struct entity *entity, coord_t y, coord_t x) {
 }
 
 static bool entity_move_attack(struct entity *entity, coord_t y, coord_t x) {
-    return entity_move(entity, y, x) || entity_attack(entity, y, x);
+    return (entity_move(entity, y, x) || entity_attack(entity, y, x)) != 0;
 }
 
 static bool entity_move_delta(struct entity *entity, int dy, int dx) {
@@ -211,7 +215,7 @@ static void entity_place(struct entity *entity) {
     while (!entity_move(entity, rand() % MAX_Y, rand() % MAX_X)) {}
 }
 
-void entity_init_all() {
+void entity_init_all(void) {
     // TODO spawn tables or something
     for (int i = 0; i < 30; i++) {
         struct entity *entity = malloc(sizeof(struct entity));
@@ -230,22 +234,22 @@ void entity_init_all() {
     }
 }
 
-void player_init() { entity_place(&PLAYER); }
+void player_init(void) { entity_place(&PLAYER); }
 
 static void entity_act(struct entity *entity) {
     // TODO A* pathfinding
     // http://roguebasin.com/index.php/Pathfinding
     // Try until move succeeds
     for (int i = 0; i < 30; i++) {
-        int dy = rand() % 3 - 1;
-        int dx = rand() % 3 - 1;
+        int dy = (rand() % 3) - 1;
+        int dx = (rand() % 3) - 1;
         if (entity_move_delta(entity, dy, dx)) {
             return;
         }
     }
 }
 
-void entity_act_all() {
+void entity_act_all(void) {
     struct entity_node *current = ENTITIES.head;
     while (current != NULL) {
         entity_act(current->entity);
@@ -253,6 +257,6 @@ void entity_act_all() {
     }
 }
 
-void entity_free_all() { entity_list_free(&ENTITIES); }
+void entity_free_all(void) { entity_list_free(&ENTITIES); }
 
-void player_free() { item_list_free(&PLAYER.items); }
+void player_free(void) { item_list_free(&PLAYER.items); }

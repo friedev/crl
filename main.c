@@ -1,3 +1,4 @@
+#include "common.h"
 #define TB_IMPL
 #include <stdlib.h>
 #include <termbox2.h>
@@ -9,7 +10,7 @@
 #include "item.h"
 #include "map.h"
 
-static void init_all() {
+static void init_all(void) {
     draw_init();
     map_init();
     item_init_all();
@@ -18,12 +19,12 @@ static void init_all() {
     fov_update();
 }
 
-static void next_turn() {
+static void next_turn(void) {
     entity_act_all();
     fov_update();
 }
 
-static void free_all() {
+static void free_all(void) {
     entity_free_all();
     player_free();
     item_free_all();
@@ -33,7 +34,7 @@ static void free_all() {
 static bool handle_input(struct tb_event event) {
     bool playing = true;
     bool end_turn = false;
-    struct item_node *item_node;
+    struct item_node *item_node = NULL;
     switch (event.ch) {
     case 'k':
         end_turn = entity_move_attack_delta(&PLAYER, -1, 0);
@@ -89,7 +90,7 @@ static bool handle_input(struct tb_event event) {
     return playing;
 }
 
-int main() {
+int main(void) {
     srand(time(NULL));
     init_all();
 

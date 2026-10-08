@@ -2,16 +2,17 @@
 
 #include "draw.h"
 
+#include "common.h"
 #include "entity.h"
 #include "map.h"
 #include "message.h"
 
-void draw_init() {
+void draw_init(void) {
     tb_init();
     tb_set_output_mode(TB_OUTPUT_256);
 }
 
-void draw_free() { tb_shutdown(); }
+void draw_free(void) { tb_shutdown(); }
 
 static void draw_cell(coord_t y, coord_t x, char ch, color_t fg, color_t bg) {
     tb_set_cell(x, y, ch, fg, bg);
@@ -38,7 +39,7 @@ static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x) {
         return;
     }
 
-    const struct tile_type *tile_type;
+    const struct tile_type *tile_type = NULL;
     if (!tile->visible) {
         tile_type = &TILE_TYPES[tile->last_visible_type];
         draw_cell(cy, cx, tile_type->ch, FG_MEMORY, BG_MEMORY);
@@ -58,12 +59,12 @@ static void draw_coord(coord_t cy, coord_t cx, coord_t y, coord_t x) {
     draw_tile(cy, cx, tile);
 }
 
-static void draw_map() {
+static void draw_map(void) {
     int max_y = tb_height();
     int max_x = tb_width();
     max_y -= MESSAGE_COUNT;
-    int off_y = PLAYER.y - max_y / 2;
-    int off_x = PLAYER.x - max_x / 2;
+    int off_y = PLAYER.y - (max_y / 2);
+    int off_x = PLAYER.x - (max_x / 2);
     for (int cy = 0; cy < max_y; cy++) {
         for (int cx = 0; cx < max_x; cx++) {
             int y = cy + off_y;
@@ -75,7 +76,7 @@ static void draw_map() {
     }
 }
 
-static void draw_messages() {
+static void draw_messages(void) {
     int y = tb_height() - MESSAGE_COUNT;
     int x = 0;
     int i = MESSAGE_INDEX;
@@ -87,7 +88,7 @@ static void draw_messages() {
     } while (i != MESSAGE_INDEX);
 }
 
-void draw() {
+void draw(void) {
     draw_map();
     draw_messages();
 }

@@ -4,7 +4,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define INVALID_COORD (-1)
+enum {
+    INVALID_COORD = (-1),
+};
 
 // Adjustments for 256-color mode
 // TB_BLACK is 1, but black in 256-color mode is 0
@@ -60,9 +62,9 @@ struct tile_type {
 };
 
 enum {
-    TILE_FLOOR,
-    TILE_WALL,
-    TILE_TYPE_COUNT,
+    TILE_FLOOR = 0,
+    TILE_WALL = 1,
+    TILE_TYPE_COUNT = 2,
     TILE_INVALID = TILE_TYPE_COUNT,
 };
 

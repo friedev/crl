@@ -1,18 +1,17 @@
-#include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "map.h"
 
-#include "fov.h"
-#include "message.h"
+#include "common.h"
 
 struct tile TILE_MAP[MAX_Y][MAX_X];
 
 bool map_in_bounds(int y, int x) {
-    return MIN_Y <= y && y < MAX_Y && MIN_X <= x && x < MAX_X;
+    return (MIN_Y <= y && y < MAX_Y && MIN_X <= x && x < MAX_X) != 0;
 }
 
-static void map_clear() {
+static void map_clear(void) {
     for (coord_t y = 0; y < MAX_Y; y++) {
         for (coord_t x = 0; x < MAX_X; x++) {
             TILE_MAP[y][x] = (struct tile) {
@@ -65,7 +64,7 @@ static uint8_t map_smooth_tile(coord_t y, coord_t x) {
     return TILE_MAP[y][x].type;
 }
 
-static void map_smooth() {
+static void map_smooth(void) {
     uint8_t buffer[MAX_Y][MAX_X];
     for (coord_t y = MIN_Y; y < MAX_Y; y++) {
         for (coord_t x = MIN_X; x < MAX_X; x++) {
@@ -79,7 +78,7 @@ static void map_smooth() {
     }
 }
 
-static void map_randomize() {
+static void map_randomize(void) {
     for (coord_t y = MIN_Y; y < MAX_Y; y++) {
         for (coord_t x = MIN_X; x < MAX_X; x++) {
             TILE_MAP[y][x].type = rand() % 2 ? TILE_FLOOR : TILE_WALL;
@@ -106,7 +105,7 @@ static void map_border(uint8_t type) {
     }
 }
 
-void map_init() {
+void map_init(void) {
     map_clear();
     map_randomize();
     for (int i = 0; i < 3; i++) {

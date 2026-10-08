@@ -1,8 +1,10 @@
 #ifndef MESSAGES_H
 #define MESSAGES_H
 
-#define MESSAGE_COUNT 5
-#define MESSAGE_SIZE 80
+enum {
+    MESSAGE_COUNT = 5,
+    MESSAGE_SIZE = 80,
+};
 
 extern char MESSAGES[MESSAGE_COUNT][MESSAGE_SIZE];
 extern int MESSAGE_INDEX;

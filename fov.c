@@ -76,16 +76,7 @@ static void fov_cast_light(
                 blocked = true;
                 next_start_slope = r_slope;
                 fov_cast_light(
-                    x,
-                    y,
-                    radius,
-                    i + 1,
-                    start_slope,
-                    l_slope,
-                    xx,
-                    xy,
-                    yx,
-                    yy
+                    x, y, radius, i + 1, start_slope, l_slope, xx, xy, yx, yy
                 );
             }
         }

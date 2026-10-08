@@ -18,7 +18,7 @@ void item_list_add_node(struct item_list *list, struct item_node *node) {
 
 void item_list_add(struct item_list *list, struct item *item) {
     struct item_node *node = malloc(sizeof(struct item_node));
-    *node = (struct item_node){
+    *node = (struct item_node) {
         .item = item,
         .next = NULL,
         .prev = NULL,
@@ -62,9 +62,7 @@ void item_list_clear(struct item_list *list) {
     }
 }
 
-void item_free(struct item *item) {
-    free(item);
-}
+void item_free(struct item *item) { free(item); }
 
 void item_list_free(struct item_list *list) {
     while (list->head != NULL) {
@@ -87,7 +85,7 @@ void item_init_all() {
     // TODO spawn tables or something
     for (int i = 0; i < 30; i++) {
         struct item *item = malloc(sizeof(struct item));
-        *item = (struct item){
+        *item = (struct item) {
             .type = ITEM_GOLD,
         };
         item_place(item);

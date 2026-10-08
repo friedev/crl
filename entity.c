@@ -38,7 +38,7 @@ void entity_list_add_node(struct entity_list *list, struct entity_node *node) {
 
 void entity_list_add(struct entity_list *list, struct entity *entity) {
     struct entity_node *node = malloc(sizeof(struct entity_node));
-    *node = (struct entity_node){
+    *node = (struct entity_node) {
         .entity = entity,
         .next = NULL,
         .prev = NULL,
@@ -47,7 +47,7 @@ void entity_list_add(struct entity_list *list, struct entity *entity) {
 }
 
 struct entity_node *
-    entity_list_find(struct entity_list *list, struct entity *entity) {
+entity_list_find(struct entity_list *list, struct entity *entity) {
     struct entity_node *current = list->head;
     while (current != NULL && current->entity != entity) {
         current = current->next;
@@ -215,25 +215,22 @@ void entity_init_all() {
     // TODO spawn tables or something
     for (int i = 0; i < 30; i++) {
         struct entity *entity = malloc(sizeof(struct entity));
-        *entity = (struct entity){
+        *entity = (struct entity) {
             .type = ENTITY_GOBLIN,
             .y = INVALID_COORD,
             .x = INVALID_COORD,
-            .items =
-                {
-                    .size = 0,
-                    .head = NULL,
-                    .tail = NULL,
-                },
+            .items = {
+                .size = 0,
+                .head = NULL,
+                .tail = NULL,
+            },
         };
         entity_place(entity);
         entity_list_add(&ENTITIES, entity);
     }
 }
 
-void player_init() {
-    entity_place(&PLAYER);
-}
+void player_init() { entity_place(&PLAYER); }
 
 static void entity_act(struct entity *entity) {
     // TODO A* pathfinding
@@ -256,10 +253,6 @@ void entity_act_all() {
     }
 }
 
-void entity_free_all() {
-    entity_list_free(&ENTITIES);
-}
+void entity_free_all() { entity_list_free(&ENTITIES); }
 
-void player_free() {
-    item_list_free(&PLAYER.items);
-}
+void player_free() { item_list_free(&PLAYER.items); }

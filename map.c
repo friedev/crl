@@ -15,17 +15,16 @@ bool map_in_bounds(int y, int x) {
 static void map_clear() {
     for (coord_t y = 0; y < MAX_Y; y++) {
         for (coord_t x = 0; x < MAX_X; x++) {
-            TILE_MAP[y][x] = (struct tile){
+            TILE_MAP[y][x] = (struct tile) {
                 .type = TILE_FLOOR,
                 .visible = false,
                 .last_visible_type = TILE_INVALID,
                 .entity = NULL,
-                .items =
-                    {
-                        .size = 0,
-                        .head = NULL,
-                        .tail = NULL,
-                    },
+                .items = {
+                    .size = 0,
+                    .head = NULL,
+                    .tail = NULL,
+                },
             };
         }
     }
@@ -83,8 +82,7 @@ static void map_smooth() {
 static void map_randomize() {
     for (coord_t y = MIN_Y; y < MAX_Y; y++) {
         for (coord_t x = MIN_X; x < MAX_X; x++) {
-            TILE_MAP[y][x].type = rand() % 2 ? TILE_FLOOR
-                             : TILE_WALL;
+            TILE_MAP[y][x].type = rand() % 2 ? TILE_FLOOR : TILE_WALL;
         }
     }
 }

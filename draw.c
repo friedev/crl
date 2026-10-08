@@ -11,9 +11,7 @@ void draw_init() {
     tb_set_output_mode(TB_OUTPUT_256);
 }
 
-void draw_free() {
-    tb_shutdown();
-}
+void draw_free() { tb_shutdown(); }
 
 static void draw_cell(coord_t y, coord_t x, char ch, color_t fg, color_t bg) {
     tb_set_cell(x, y, ch, fg, bg);
